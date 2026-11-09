@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm'
-import { currentUser } from '@clerk/nextjs/server'
+import { currentUser } from '@/lib/dev/auth'
 import { db, users } from '@/lib/db'
 
 // Shape of the relevant fields on a Clerk `user.created` / `user.updated`

@@ -1,6 +1,6 @@
 'use server'
 
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/lib/dev/auth'
 import { revalidatePath } from 'next/cache'
 import { eq, sql } from 'drizzle-orm'
 import { db, users } from '@/lib/db'

@@ -42,3 +42,18 @@ yarn-error.log*
 .claude/
 .impeccable/
 /PRODUCT.md
+
+# ── Devbox (platforms/tradenza) ──────────────────────────────────────────────
+# Dati utente locali (gruppo B): le cartelle si tengono (gitkeep), i contenuti
+# si ignorano.
+/workspace/workspaces/*
+!/workspace/workspaces/.gitkeep
+/workspace/output/*
+!/workspace/output/.gitkeep
+/workspace/download/*
+!/workspace/download/.gitkeep
+/workspace/import/*
+!/workspace/import/.gitkeep
+
+# Configurazione locale della devbox (se copiata da docker/.env.example).
+/docker/.env

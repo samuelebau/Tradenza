@@ -1,0 +1,73 @@
+# Compose della devbox "Tradenza" (DEV: app Next.js + Postgres).
+# App: `next dev` (hot reload, sorgente bind-mountato). DB: Postgres 16.
+# Accesso: http://localhost:3000 (niente VNC). Project name "tm_tradenza".
+name: tm_tradenza
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    # network_mode: host come le altre devbox (VPN su questo host).
+    network_mode: host
+    environment:
+      POSTGRES_USER: tradenza
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tradenza}
+      POSTGRES_DB: tradenza
+      PGPORT: ${POSTGRES_PORT:-5432}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U tradenza -d tradenza -p ${POSTGRES_PORT:-5432}']
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: tm_tradenza:latest
+    container_name: tm_tradenza
+    network_mode: host
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: development
+      PORT: "${APP_PORT:-3000}"
+      DATABASE_URL: postgresql://tradenza:${POSTGRES_PASSWORD:-tradenza}@127.0.0.1:${POSTGRES_PORT:-5432}/tradenza
+      AUTH_DISABLED: "1"
+      DEV_USER_ID: ${DEV_USER_ID:-user_dev_local}
+      DEV_USER_EMAIL: ${DEV_USER_EMAIL:-dev@tradenza.local}
+      DEV_USER_FIRST_NAME: ${DEV_USER_FIRST_NAME:-Dev}
+      DEV_USER_LAST_NAME: ${DEV_USER_LAST_NAME:-User}
+      DEV_USERNAME: ${DEV_USERNAME:-dev}
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:-pk_test_cGxhY2Vob2xkZXIudHJhZGVuemEuZGV2JA==}
+      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY:-sk_test_dev_placeholder}
+      NEXT_PUBLIC_CLERK_SIGN_IN_URL: /sign-in
+      NEXT_PUBLIC_CLERK_SIGN_UP_URL: /sign-up
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: /dashboard
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: /dashboard
+      NEXT_PUBLIC_APP_URL:
+      NEXT_PUBLIC_MARKETING_URL:
+      NEXT_PUBLIC_POSTHOG_KEY:
+      NEXT_PUBLIC_POSTHOG_HOST:
+      NEXT_PUBLIC_SENTRY_DSN:
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-}
+      SKIP_MIGRATIONS: ${SKIP_MIGRATIONS:-0}
+    volumes:
+      - ..:/app
+      - /app/node_modules
+      - ../workspace:/home/node/workspace
+    shm_size: 1gb
+    stop_grace_period: 20s
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:${APP_PORT:-3000}/api/health >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+volumes:
+  db-data:

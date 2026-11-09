@@ -46,7 +46,26 @@ const APP_HOST = hostOf(process.env.NEXT_PUBLIC_APP_URL)
 const MARKETING_HOST = hostOf(process.env.NEXT_PUBLIC_MARKETING_URL)
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL
 
-export default clerkMiddleware(async (auth, request) => {
+// Dev-no-auth mode (local devbox, single user): when AUTH_DISABLED=1 the app
+// runs without Clerk — `auth()/currentUser()/clerkClient()` in server code are
+// shimmed (@/lib/dev/auth) to a fixed dev identity, and the Clerk middleware
+// itself is bypassed here so a placeholder CLERK_SECRET_KEY can't break request
+// handling. Only the per-request nonce + CSP is applied. When AUTH_DISABLED is
+// unset, the real Clerk middleware runs unchanged.
+const AUTH_DISABLED = process.env.AUTH_DISABLED === '1'
+
+async function applyCsp(request: import('next/server').NextRequest) {
+  const nonce = generateNonce()
+  const csp = buildCsp(nonce, process.env.NODE_ENV !== 'production')
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-nonce', nonce)
+  requestHeaders.set('content-security-policy', csp)
+  const response = NextResponse.next({ request: { headers: requestHeaders } })
+  response.headers.set('content-security-policy', csp)
+  return response
+}
+
+const realMiddleware = clerkMiddleware(async (auth, request) => {
   const host = (request.headers.get('host') ?? '').toLowerCase()
   const { pathname, search } = request.nextUrl
 
@@ -65,21 +84,13 @@ export default clerkMiddleware(async (auth, request) => {
     await auth.protect()
   }
 
-  // Attach a per-request nonce + strict CSP. The nonce is exposed on the request
-  // headers so Server Components (root layout, Clerk) can read it via `next/headers`
-  // and stamp it onto their inline scripts; it's also set on the response so the
-  // browser enforces the same policy.
-  const nonce = generateNonce()
-  const csp = buildCsp(nonce, process.env.NODE_ENV !== 'production')
-
-  const requestHeaders = new Headers(request.headers)
-  requestHeaders.set('x-nonce', nonce)
-  requestHeaders.set('content-security-policy', csp)
-
-  const response = NextResponse.next({ request: { headers: requestHeaders } })
-  response.headers.set('content-security-policy', csp)
-  return response
+  return applyCsp(request)
 })
+
+export default function middleware(request: import('next/server').NextRequest) {
+  if (AUTH_DISABLED) return applyCsp(request)
+  return realMiddleware(request)
+}
 
 export const config = {
   matcher: [

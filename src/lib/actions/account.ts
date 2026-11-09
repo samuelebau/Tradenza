@@ -1,6 +1,6 @@
 'use server'
 
-import { clerkClient } from '@clerk/nextjs/server'
+import { clerkClient } from '@/lib/dev/auth'
 import { mutationAction } from '@/lib/safe-action'
 import { purgeUserData } from '@/lib/db/purge-user'
 

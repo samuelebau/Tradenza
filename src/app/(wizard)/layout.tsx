@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/lib/dev/auth'
 import { redirect } from 'next/navigation'
 
 export default async function WizardLayout({ children }: { children: React.ReactNode }) {

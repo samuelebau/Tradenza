@@ -1,4 +1,4 @@
-import { currentUser } from '@clerk/nextjs/server'
+import { currentUser } from '@/lib/dev/auth'
 
 // Admin access is gated by e-mail: only the addresses listed in the private
 // `ADMIN_EMAILS` env var (comma-separated) may see the internal /admin overview.

@@ -1,4 +1,4 @@
-import { clerkClient } from '@clerk/nextjs/server'
+import { clerkClient } from '@/lib/dev/auth'
 import { eq, sql } from 'drizzle-orm'
 import { db, users } from '@/lib/db'
 import { purgeUserData } from '@/lib/db/purge-user'

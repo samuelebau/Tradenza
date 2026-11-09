@@ -1,6 +1,6 @@
 'use server'
 
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/lib/dev/auth'
 import { eq } from 'drizzle-orm'
 import { db, users } from '@/lib/db'
 import { sanitizePrefs, type SidebarPrefs } from './trade-sidebar'

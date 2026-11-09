@@ -1,7 +1,7 @@
 'use server'
 
 import { and, eq, isNull } from 'drizzle-orm'
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/lib/dev/auth'
 import { db, users } from '@/lib/db'
 import { isValidTimezone } from '@/lib/timezones'
 import { getUserTimezone } from '@/lib/user-timezone'
