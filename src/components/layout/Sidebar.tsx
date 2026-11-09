@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { UserButton } from '@clerk/nextjs'
+import { UserButton } from '@/lib/dev/clerk-client'
 import { LayoutDashboard, List, BarChart3, Target, BookMarked, Settings, Plus, X, ShieldCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { t } from '@/i18n'

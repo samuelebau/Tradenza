@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
-import { ClerkProvider } from '@clerk/nextjs'
+import { ClerkProvider } from '@/lib/dev/clerk-client'
 import { clerkAppearance } from '@/lib/clerk-appearance'
 import { Toaster } from 'sonner'
 import { GeistMono } from 'geist/font/mono'

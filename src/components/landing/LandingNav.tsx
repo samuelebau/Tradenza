@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { SignedIn, SignedOut } from '@clerk/nextjs'
+import { SignedIn, SignedOut } from '@/lib/dev/clerk-client'
 import { ArrowRight, Github } from 'lucide-react'
 import Logo from '@/components/ui/Logo'
 import ThemeToggle from '@/components/ui/ThemeToggle'

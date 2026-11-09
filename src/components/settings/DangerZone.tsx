@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useClerk } from '@clerk/nextjs'
+import { useClerk } from '@/lib/dev/clerk-client'
 import { toast } from 'sonner'
 import { Trash2, Loader2, AlertTriangle } from 'lucide-react'
 import { t, tRich } from '@/i18n'

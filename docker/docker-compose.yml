@@ -37,6 +37,15 @@ services:
       PORT: "${APP_PORT:-3000}"
       DATABASE_URL: postgresql://tradenza:${POSTGRES_PASSWORD:-tradenza}@127.0.0.1:${POSTGRES_PORT:-5432}/tradenza
       AUTH_DISABLED: "1"
+      # Client-visible mirror of AUTH_DISABLED + DEV_USER_*: the client bundle
+      # can only read NEXT_PUBLIC_* values, so the dev shim (@/lib/dev/clerk-client)
+      # keys off these to skip loading clerk.browser.js in dev-no-auth mode.
+      NEXT_PUBLIC_AUTH_DISABLED: "1"
+      NEXT_PUBLIC_DEV_USER_ID: ${DEV_USER_ID:-user_dev_local}
+      NEXT_PUBLIC_DEV_USER_EMAIL: ${DEV_USER_EMAIL:-dev@tradenza.local}
+      NEXT_PUBLIC_DEV_USER_FIRST_NAME: ${DEV_USER_FIRST_NAME:-Dev}
+      NEXT_PUBLIC_DEV_USER_LAST_NAME: ${DEV_USER_LAST_NAME:-User}
+      NEXT_PUBLIC_DEV_USERNAME: ${DEV_USERNAME:-dev}
       DEV_USER_ID: ${DEV_USER_ID:-user_dev_local}
       DEV_USER_EMAIL: ${DEV_USER_EMAIL:-dev@tradenza.local}
       DEV_USER_FIRST_NAME: ${DEV_USER_FIRST_NAME:-Dev}
